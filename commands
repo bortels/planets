@@ -1,0 +1,21 @@
+register username email
+login username secret
+
+authenticated (pass sessionid)
+logout
+email emailaddress
+listgames
+join gameid
+resign gameid
+gameinfo gameid
+gamename gameid name (set visible name in a given game)
+
+in a game (pass gameid)
+name object newname 
+info object
+course waypoint
+speed #
+stance attack/defend/run
+cargo source destination type amount
+build object facility
+radio player message

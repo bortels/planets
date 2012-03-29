@@ -1,0 +1,15 @@
+post the following fields with every post:
+command
+arguments
+
+realtime commands:
+  register username, email -> secret
+  login username secret -> sessionid
+  game gameid -> status
+  joingame password -> status
+  forefit -> status
+  gamelist -> game list
+  gameinfo -> info on game
+  info object -> info on object
+
+

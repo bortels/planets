@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'redis'
+
+r = Redis.new
+
+#puts r.smembers 'games'
+game = 1
+r.sadd 'games', game
+r.del "#{game}-info"
+r.hmset "#{game}-info", "nextid", 0, "rollover", Time.now.to_i + 60*60*24, "baseimageurl", "http://home.bortels.us/planets/images", "name", "The Tantalus Device"
+puts r.hgetall "#{game}-info"
+
+10.times { |i|
+   id = r.hincrby "#{game}-info", "nextid", 1
+   r.hmset "#{game}-#{id}", "name", "planet#{i}", "x", rand(100)-50, "y", rand(100)-50, "type", "planet", "player", 0
+   r.sadd "#{game}-objects", id
+}

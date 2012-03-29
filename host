@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby                                                                                                                           
+                                                                                                                                              
+require 'rubygems'                                                                                                                            
+require 'redis'                                                                                                                               
+                                                                                                                                              
+r = Redis.new                                                                                                                                 
+r.del "foos"
+#r.rpush "foos", "redis"
+#r.rpush "foos", "is"
+#r.rpush "foos", "sweet!"
+#r.sadd 'games', 1
+                                                                                                                                              
+#puts r.smembers 'games'                                                                                                                       
+                                                                                                                                              
+game = 1                                                                                                                                      
+                                                                                                                                              
+puts r.hgetall game             
+#puts r.lrange("foos", 0, -1)

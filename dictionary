@@ -1,0 +1,6 @@
+In the items below, "ID" is an id number. 
+
+games - set of game ids
+gameid-players - set of players in a given game
+gameid-objects - set of objects in a given game
+gameid-ID - hash of key-value pairs defining object
