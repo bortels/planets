@@ -1,3 +1,16 @@
 Planets
 
 A turn-based Space eXplore/eXpand/eXterminate game
+
+The game consists of two major parts - a hosting system, written with ruby/sinatra/redis, that manages
+the universe, runs the daily turns, deals with authentication of clients, and so on, and one or more client
+programs that display the data from the host system, and allow the entry of commands. 
+
+The protocol used is such that it should be fairly easy to write a client in nearly any language that's capable
+of supporting a https POST.
+
+Requirements for host: ruby, bundler, sinatra, redis. 
+
+Install: download the repo, do "bundler install".
+
+Run: do "ruby web" to run the webserver. "ruby master" to create a new universe, "ruby host" to run the turn. 
