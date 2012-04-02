@@ -1,6 +1,35 @@
 to be implemented at a later date:
 
-authentication
 visibility
 combat
 cargo
+
+random notes:
+
+ship classes: carrier, battleship, cruiser, destroyer, frigate, assault
+stealth, minelayer, minesweeper, PT boat, tender, corvette, fighter
+
+capital
+carrier (fighters)
+cruiser
+frigate
+destroyer
+assault (troop carrier)
+mine layer/sweeper
+Fast Patrol Boat (short range)
+Tender (Support/re-fuel)
+
+
+Think axes: Size (Huge, big, medium, small, one-man), 
+            Firepower (Overwhelming, Heavy, medium, light, none)
+            Speed (Lumbering, Slow, medium, fast, very fast)
+            visibility (Obvious, Present, Camoflaged, Stealthy, invisible)
+            Range (Very Long, Long, medium, short, in-system)
+            Armor (Bunker, heavy, medium, light, none)
+            Operation Expense (Expensive, Costly, reasonable, frugal, free)
+
+Think roles: Project (a presence), Recon, Patrol (respond with force),
+Strike, Defend, infiltrate. 
+
+systems: Power to use, expendible resources (fuel, missiles), durability,
+accuracy, effect (damage for weapons, food for farms, etc), crew to operate. 

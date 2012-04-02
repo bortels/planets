@@ -53,11 +53,15 @@ post '/planets' do
 
   # Session management
   sid = params[:sid] || 'BOGUS'
+  $user = "---"
   skey = "session-" + sid
   ttl = $r.ttl skey
   $auth = ttl > 0
   if ($auth) then # refresh the session
      $r.expire "session-" + sid, 15*60
+     $user = $r.hget skey, "user"
+     ip = $r.hget skey, "ip"
+     #puts "user " + $user + " just came back " + ip + " vs " + request.ip
   end
   # puts skey + " ttl is " + ttl.to_s + " and auth is " + $auth.to_s
 
@@ -69,20 +73,53 @@ post '/planets' do
      p = $r.hget "player-#{user}", "pass"
      # puts "pass for #{user} in database is #{p} compared with #{pass}"
      if (p == pass) then
-         s = rand(36**16).to_s(36)
-         skey = "session-" + s
-         $r.set skey, 1 # TODO should really be the IP, and we should check.
-         $r.expire skey, 15*60
-         halt s
+        s = rand(36**16).to_s(36)
+        skey = "session-" + s
+        $r.hmset skey, "user", user, "ip", request.ip
+        $r.expire skey, 15*60
+        $user=user
+        plog("login ok")
+        halt s
      else
+        plog("login fail, bad user or pass")
         halt "ERROR Bad Login"
      end
 
   when "gameinfo"
      requireauth()
-     halt gethash(params[:game] + '-info')
+     game = params[:game]
+     if (game) then
+        if ($r.exists "#{game}-info") then
+           members = $r.smembers "#{game}-players" || ''
+           plog("gameinfo #{game}")
+           halt gethash("#{game}-info") + "players #{members}\n"
+        else
+           halt "ERROR game #{game} does not exist"
+        end
+     else
+        halt "ERROR game is a required parameter"
+     end
+
+  when "join" # join a game, "0" is random
+     requireauth()
+     game = params[:game]
+     if (game) then
+        if ($r.exists "#{game}-info") then
+           plog("#{user} joined game #{game}")
+           $r.sadd "#{game}-players", user
+        end
+     end
+     halt $r.smembers "#{game}-players"
+
+  when "msg" # game, to, message
+     requireauth()
+     halt "TODO"
+
+  when "build" # game, who, what, how many
+     halt "TODO"
 
   else
+     plog("unrecognized command " + param[:cmd])
      halt "ERROR bad cmd" 
   end
   #out = ''
@@ -131,4 +168,8 @@ def gethash(key)
      output << k + ' ' + h[k] + "\n"
   end
   return output 
+end
+
+def plog(t)
+   puts Time.now.to_i.to_s + ' ' + request.ip + ' ' + $user + ' ' + t 
 end
