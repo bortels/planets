@@ -13,9 +13,9 @@ $r = Redis.new
 # At this point, you can access the Redis object using the "redis" object:
 
 # access redis within the context of an HTTP request
-get '/planets' do
+get '/p/' do
   <<-sampleform
-  <form action="/planets" method="post">
+  <form action="/p/" method="post">
   LOGIN:
   cmd: <input type="text" name="cmd" value="login"/><br />
   user: <input type="text" name="user" /><br />
@@ -23,7 +23,7 @@ get '/planets' do
   <input type="submit" value="Submit" />
   </form>
   <hr>
-  <form action="/planets" method="post">
+  <form action="/p/" method="post">
   GAMEINFO:
   cmd: <input type="text" name="cmd" value="gameinfo"/><br />
   sid: <input type="text" name="sid" /><br />
@@ -31,7 +31,7 @@ get '/planets' do
   <input type="submit" value="Submit" />
   </form>
   <hr>
-  <form action="/planets" method="post">
+  <form action="/p" method="post">
   cmd: <input type="text" name="cmd"/><br />
   sid: <input type="text" name="sid" /><br />
   a1: <input type="text" name="a1" /><br />
@@ -48,7 +48,7 @@ get '/planets' do
   sampleform
 end
 
-post '/planets' do
+post '/p/' do
   content_type "text/plain"
 
   # Session management
@@ -90,7 +90,8 @@ post '/planets' do
      game = params[:game]
      if (game) then
         if ($r.exists "#{game}-info") then
-           members = $r.smembers "#{game}-players" || ''
+           memberlist = $r.smembers "#{game}-players" || []
+           members = memberlist.join(' ')
            plog("gameinfo #{game}")
            halt gethash("#{game}-info") + "players #{members}\n"
         else
@@ -132,24 +133,24 @@ post '/planets' do
   # @foos.inspect
 end
 
-get '/planets/info/:game/:object' do |game, object|
+get '/p/info/:game/:object' do |game, object|
   content_type "text/plain"
   gethash("#{game}-#{object}")
 end
 
-get '/planets/join/:game' do |game|
+get '/p/join/:game' do |game|
    "TBI"
 end
 
-get '/planets/login/:user' do |user|
+get '/p/login/:user' do |user|
 end
 
-get '/planets/name/:game/:object/:name' do |game, object, name| # Maybe this should be an order...
+get '/p/name/:game/:object/:name' do |game, object, name| # Maybe this should be an order...
     obj = "#{game}-#{object}"
     $r.hset obj, "name", name
 end
 
-get 'planets/order/:game/:order' do |game, order|
+get '/p/order/:game/:order' do |game, order|
    id = r.hincrby "#{game}-info", "nextid", 1
    r.hmset "#{game}-#{id}", "do", order, "type", "order", "player", 0
    id
