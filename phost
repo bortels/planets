@@ -1,0 +1,101 @@
+#!/usr/bin/lua
+
+local redis = require 'redis'
+local client = redis.connect('127.0.0.1', 6379)
+local now = os.time()
+
+function round(num, idp)
+  local mult = 10^(idp or 0)
+  return math.floor(num * mult + 0.5) / mult
+end
+
+function dumptable(t)
+   local k,v
+   for k,v in pairs(t) do
+      print(k .. ' => ' .. v)
+   end
+end
+
+function loadgame(g)
+   info = client:hgetall(g .. "-info")
+   if (now - info['rollover'] > 0) then
+      rungame(g)
+   else
+      print('game ' .. g .. ' runs in ' .. info.rollover - now .. ' seconds')
+   end 
+end
+
+function doplanet(p)
+   -- population growth
+   local pop
+   if (p.pop) then pop = p.pop else pop=0 end
+   pop = round(pop * 1.01)
+   p.pop = pop
+   -- manufacturing
+end
+
+function doship(s)
+   -- movement
+   local speed = tonumber(s.speed)
+   if (speed > 0) then
+      local x1 = s.x
+      local y1 = s.y
+      local x2 = s.wpx
+      local y2 = s.wpy
+      local speed = s.speed
+      -- math is fun
+      local dist2 = (y2 -y1) ^ 2 + (x2 - x1) ^ 2
+      if (speed ^ 2 > dist2) then 
+         s.x = s.wpx
+         s.y = s.wpy
+         print('ship ' .. s.name .. ' has arrived at the waypoint')
+      else
+         local angle = math.atan2(y2 - y1, x2 - x1)
+         local dx = math.cos(angle) * speed
+         local dy = math.sin(angle) * speed
+         s.x = round(s.x + dx)
+         s.y = round(s.y + dy)
+         print('ship ' .. s.name .. ' moved from (' .. x1 .. ',' .. y1 .. ') to (' .. s.x .. ',' .. s.y .. ')')
+      end
+   end -- if (s.speed > 0)
+end
+
+function rungame(g)
+   print("running game " .. g .. " '" .. info['name'] .. "'")
+   obs = client:smembers(g .. "-objects")
+   things = {}
+   -- load all the things!
+   for _, v in pairs(obs) do
+      things[v] = client:hgetall(g .. '-' .. v)
+   end
+   -- do all the things!
+   for _, v in pairs(obs) do
+      if (things[v]['type'] == 'planet') then doplanet(things[v]) end
+      if (things[v]['type'] == 'ship')   then doship(things[v])   end
+   end
+   -- save all the things!
+   for _, v in pairs(obs) do
+      client:hmset(g .. '-' .. v, things[v])
+   end
+   -- TODO cull any dead objects (has "dead" property)
+   -- TODO update game info (new rollover)
+   client:hset(g .. "-info", "rollover", info.rollover + info.turnlen)  
+   -- client:hset(g .. "-info", "rollover", now + info.turnlen)
+end
+
+-- dump client info
+function dumpinfo()
+   for k,v in pairs(client:info()) do
+      print(k)
+      for i,j in pairs(v) do
+         print('    ' .. i .. ' => ' .. tostring(j))
+      end
+   end
+end
+
+-- main
+games = client:smembers("games")
+for _,v in ipairs(games) do
+   loadgame(v)
+end
+
