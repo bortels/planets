@@ -90,10 +90,9 @@ post '/p/' do
      game = params[:game]
      if (game) then
         if ($r.exists "#{game}-info") then
-           memberlist = $r.smembers "#{game}-players" || []
-           members = memberlist.join(' ')
+           # members = $r.hgetall "#{game}-players"
            plog("gameinfo #{game}")
-           halt gethash("#{game}-info") + "players #{members}\n"
+           halt gethash("#{game}-info") + gethash("#{game}-players")
         else
            halt "ERROR game #{game} does not exist"
         end
@@ -107,10 +106,10 @@ post '/p/' do
      if (game) then
         if ($r.exists "#{game}-info") then
            plog("#{user} joined game #{game}")
-           $r.sadd "#{game}-players", user
+           # $r.sadd "#{game}-players", user  # TODO this needs to be added to the hash
         end
      end
-     halt $r.smembers "#{game}-players"
+     halt gethash("#{game}-players")
 
   when "msg" # game, to, message
      requireauth()
