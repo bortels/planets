@@ -27,8 +27,7 @@ end
 
 function doplanet(p)
    -- population growth
-   local pop
-   if (p.pop) then pop = p.pop else pop=0 end
+   local pop = p.pop or 0
    pop = round(pop * 1.01)
    p.pop = pop
    -- manufacturing
