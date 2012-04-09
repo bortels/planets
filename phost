@@ -35,6 +35,9 @@ function doplanet(p)
 end
 
 function doship(s)
+   -- base visibility
+   vis = 1
+   if (s.basevis) then vis = s.basevis end
    -- movement
    local speed = tonumber(s.speed)
    if (speed > 0) then
@@ -45,6 +48,7 @@ function doship(s)
       local speed = s.speed
       -- math is fun
       local dist2 = (y2 -y1) ^ 2 + (x2 - x1) ^ 2
+      if (dist2 < 0.1) then vis = vis / 2 end -- not moving is stealthy
       if (speed ^ 2 > dist2) then 
          s.x = s.wpx
          s.y = s.wpy
@@ -57,7 +61,10 @@ function doship(s)
          s.y = round(s.y + dy)
          print('ship ' .. s.name .. ' moved from (' .. x1 .. ',' .. y1 .. ') to (' .. s.x .. ',' .. s.y .. ')')
       end
+   else
+      vis = vis / 2 -- not moving is stealthy
    end -- if (s.speed > 0)
+   s.vis = vis
 end
 
 function rungame(g)

@@ -5,6 +5,8 @@ require 'redis'
 
 r = Redis.new
 
+# r.hmset "player-bortels", "pass", "bunko"
+
 #puts r.smembers 'games'
 game = 1
 r.sadd 'games', game
