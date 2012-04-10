@@ -100,7 +100,7 @@ if (post.cmd == "gameinfo") then
       if (client:exists(post.game .. "-info")) then
          printhash(post.game .. "-info")
          printhash(post.game .. "-players")
-         write(client:smembers(post.game .. "-objects"))
+         write("visible " .. client:smembers(post.game .. "-objects"))
          do return end
       else
          print("ERROR game " .. post.game .. " does not exist")
