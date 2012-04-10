@@ -101,11 +101,7 @@ if (post.cmd == "gameinfo") then
          printhash(post.game .. "-info")
          printhash(post.game .. "-players")
          local obs = client:smembers(post.game .. '-objects')
-         io.write("visible ")
-         for _,v in pairs(obs) do
-            io.write(v)
-            io.write(' ')
-         end
+         io.write("visible " .. table.concat(obs, ' '))
          do return end
       else
          print("ERROR game " .. post.game .. " does not exist")
