@@ -193,7 +193,39 @@ if (post.cmd == "rename") then
       print("ERROR you don't seem to own that object")
       do return end
    end
+end
 
+if (post.cmd == "waypoint") then
+   requireauth()
+   if (post.x == nil) then
+      print("ERROR 'x' is a required parameter")
+      do return end
+   end
+   if (post.y == nil) then
+      print("ERROR 'x' is a required parameter")
+      do return end
+   end
+   if (post.object == nil) then
+      print("ERROR 'object' is a required parameter")
+      do return end
+   end
+   if (post.game == nil) then
+      print("ERROR 'game' is a required parameter")
+      do return end
+   end
+   -- confirm this player owns the object to be renamed
+   local info = client:hgetall(post.game .. '-' .. post.object)
+   local player = info.player
+   local gameinfo = client:hgetall(post.game .. '-players')
+   if (post.user == gameinfo.player) then
+      client.hset(post.game .. '-' .. post.object, 'wpx', post.x)
+      client.hset(post.game .. '-' .. post.object, 'wpy', post.y)
+      printhash(post.game .. '-' .. post.object)
+      do return end
+   else
+      print("ERROR you don't seem to own that object")
+      do return end
+   end
 end
 
 if (post.cmd == "debug") then
