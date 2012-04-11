@@ -100,13 +100,28 @@ if (post.cmd == "gameinfo") then
       if (client:exists(post.game .. "-info")) then
          printhash(post.game .. "-info")
          printhash(post.game .. "-players")
-         local obs = client:smembers(post.game .. '-objects')
-         io.write("visible " .. table.concat(obs, ' '))
+--         local obs = client:smembers(post.game .. '-objects')
+--         io.write("visible " .. table.concat(obs, ' '))
          do return end
       else
          print("ERROR game " .. post.game .. " does not exist")
          do return end
       end
+   else
+      print("ERROR game is a required parameter")
+      do return end
+   end
+end
+
+if (post.cmd == "visible") then
+   requireauth()
+   if (post.game) then
+      local obs = client:smembers(post.game .. '-objects')
+      for _,v in pairs(obs) do
+         local o = client:hgetall(post.game .. '-' .. v)
+         io.write(v .. ' ' .. o.player .. ' ' .. o.x .. ' ' ..  o.y .. ' ' .. o.type .. ' ' .. o.name .. "\n")
+      end
+      do return end
    else
       print("ERROR game is a required parameter")
       do return end
