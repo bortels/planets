@@ -1,0 +1,15 @@
+#!/usr/bin/perl
+
+$url = "http://home.bortels.us/p.cgi";
+$game = 1;
+
+print "login\n";
+$sid = `curl -d "cmd=login&user=bortels&pass=bunko" $url`;
+print "\ngot sessionid $sid\n";
+chomp($sid);
+
+$info = `curl -d "cmd=gameinfo&sid=$sid&game=$game" $url`;
+print $info;
+
+$visible = `curl -d "cmd=visible&sid=$sid&game=$game" $url`;
+print $visible;
