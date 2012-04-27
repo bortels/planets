@@ -9,8 +9,8 @@ programs that display the data from the host system, and allow the entry of comm
 The protocol used is such that it should be fairly easy to write a client in nearly any language that's capable
 of supporting a https POST.
 
-Requirements for host: ruby, bundler, sinatra, redis. 
+Note the intent is to do the combat engine in Lua, so it can use the same code on the client and server. 
 
-Install: download the repo, do "bundler install".
+Requirements for host: Lua, anything that can do a cgi script (developed under apache), redis
 
-Run: do "ruby web" to run the webserver. "ruby master" to create a new universe, "ruby host" to run the turn. 
+Run: do "lua web" to run the webserver. "lua master" to create a new universe, "lua host" to run the turn. 
